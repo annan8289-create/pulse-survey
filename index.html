@@ -6,154 +6,146 @@
 <title>펄스 서베이</title>
 <style>
   :root{
-    --bg:#EDF1F5;
-    --surface:#FBFCFD;
-    --ink:#1B2A3A;
-    --ink-soft:#5A6B7B;
+    --yonsei:#003876;      /* 연세 네이비 */
+    --yonsei-2:#0A4C93;
+    --yonsei-soft:#E5EDF6;
+    --bg:#F0F3F7;
+    --surface:#FFFFFF;
+    --ink:#1A2733;
+    --ink-soft:#5C6B7A;
     --line:#D5DEE7;
-    --accent:#2C5F8A;
-    --accent-soft:#DCE8F2;
-    --accent-deep:#1B3E5C;
-    --warm:#E8A24A;
-    --cool:#6FA8C7;
-    --pos:#3E8E7E;
-    --neg:#C8794F;
-    --shadow:0 8px 30px rgba(27,42,58,.10);
+    --sun:#F2A93B;
+    --pos:#2E8B72;
+    --neg:#D46A4A;
+    --orange:#EE7C30;
+    --shadow:0 8px 30px rgba(0,42,90,.10);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;
-    background:var(--bg);
-    color:var(--ink);
-    display:flex;align-items:center;justify-content:center;
-    padding:16px;
-    overflow:hidden;
+    background:var(--bg);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden;
   }
   .phone{
-    width:100%;max-width:420px;height:min(860px,96vh);
-    background:var(--surface);
-    border-radius:28px;
-    box-shadow:var(--shadow);
-    display:flex;flex-direction:column;
-    overflow:hidden;position:relative;
+    width:100%;max-width:440px;height:min(880px,96vh);
+    background:var(--surface);border-radius:26px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;overflow:hidden;position:relative;
   }
+  /* brand header */
+  .brand{padding:16px 24px 0;display:flex;align-items:center;justify-content:space-between;flex:none;}
+  .brand .logo{display:flex;align-items:center;gap:9px;}
+  .brand .mark{width:26px;height:26px;border-radius:50%;background:var(--yonsei);display:flex;align-items:center;justify-content:center;}
+  .brand .mark svg{width:15px;height:15px;}
+  .brand .bt{font-size:13px;font-weight:700;color:var(--yonsei);letter-spacing:-.01em;}
+  .brand .bt small{display:block;font-size:9.5px;color:var(--ink-soft);font-weight:500;letter-spacing:.02em;}
 
-  /* progress */
-  .topbar{padding:20px 24px 8px;display:flex;align-items:center;gap:14px;}
-  .back{
-    width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
-    background:none;display:flex;align-items:center;justify-content:center;
-    cursor:pointer;color:var(--ink-soft);flex:none;opacity:0;pointer-events:none;
-    transition:opacity .25s;
-  }
+  .topbar{padding:14px 24px 8px;display:flex;align-items:center;gap:13px;}
+  .back{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-soft);flex:none;opacity:0;pointer-events:none;transition:opacity .25s;}
   .back.show{opacity:1;pointer-events:auto;}
-  .back svg{width:16px;height:16px;}
+  .back svg{width:15px;height:15px;}
   .track{flex:1;height:5px;background:var(--line);border-radius:3px;overflow:hidden;}
-  .fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-deep));border-radius:3px;transition:width .4s cubic-bezier(.4,0,.2,1);}
+  .fill{height:100%;width:0;background:linear-gradient(90deg,var(--yonsei-2),var(--yonsei));border-radius:3px;transition:width .4s cubic-bezier(.4,0,.2,1);}
   .count{font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums;flex:none;}
 
-  /* stage */
   .stage{flex:1;position:relative;overflow:hidden;}
-  .card{
-    position:absolute;inset:0;
-    padding:12px 24px 24px;
-    display:flex;flex-direction:column;
-    opacity:0;transform:translateX(40px);
-    pointer-events:none;
-    transition:opacity .38s ease,transform .38s cubic-bezier(.32,.72,0,1);
-    overflow-y:auto;
-  }
+  .card{position:absolute;inset:0;padding:8px 24px 20px;display:flex;flex-direction:column;opacity:0;transform:translateX(40px);pointer-events:none;transition:opacity .36s ease,transform .36s cubic-bezier(.32,.72,0,1);overflow-y:auto;}
   .card.active{opacity:1;transform:none;pointer-events:auto;}
   .card.left{transform:translateX(-40px);}
 
-  .qnum{font-size:12.5px;letter-spacing:.04em;color:var(--accent);font-weight:600;margin-bottom:10px;}
-  .qtext{font-size:22px;line-height:1.42;font-weight:650;margin-bottom:6px;letter-spacing:-.01em;}
-  .qhint{font-size:13.5px;color:var(--ink-soft);margin-bottom:22px;}
+  .qnum{font-size:12px;letter-spacing:.03em;color:var(--yonsei);font-weight:700;margin-bottom:9px;}
+  .qtext{font-size:20px;line-height:1.4;font-weight:680;margin-bottom:5px;letter-spacing:-.01em;}
+  .qhint{font-size:13px;color:var(--ink-soft);margin-bottom:18px;}
+  .choose{font-size:12.5px;color:var(--yonsei);font-weight:600;margin-bottom:12px;}
 
-  /* weather / icon choices */
-  .choices{display:flex;flex-direction:column;gap:11px;margin-top:4px;}
-  .opt{
-    display:flex;align-items:center;gap:15px;
-    padding:15px 16px;border:1.5px solid var(--line);border-radius:16px;
-    background:var(--surface);cursor:pointer;
-    transition:border-color .2s,background .2s,transform .12s;
-  }
-  .opt:active{transform:scale(.98);}
-  .opt.sel{border-color:var(--accent);background:var(--accent-soft);}
-  .opt .ico{width:40px;height:40px;flex:none;display:flex;align-items:center;justify-content:center;}
-  .opt .ico svg{width:38px;height:38px;}
-  .opt .lab{font-size:16px;font-weight:550;}
-  .opt .sub{font-size:12.5px;color:var(--ink-soft);margin-top:1px;}
-  .opt .txtwrap{display:flex;flex-direction:column;}
+  /* icon (weather/face) cards */
+  .iconrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:4px;}
+  .icard{flex:1 1 calc(33.3% - 6px);min-width:0;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);cursor:pointer;padding:14px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;transition:border-color .2s,background .2s,transform .12s;}
+  .icard:active{transform:scale(.97);}
+  .icard.sel{border-color:var(--yonsei);background:var(--yonsei-soft);}
+  .icard .ig{width:52px;height:52px;display:flex;align-items:center;justify-content:center;}
+  .icard .ig svg{width:50px;height:50px;}
+  .icard .il{font-size:13px;font-weight:600;text-align:center;line-height:1.25;}
 
-  /* scale gauge */
-  .scale{display:flex;flex-direction:column;gap:9px;margin-top:6px;}
-  .srow{
-    display:flex;align-items:center;gap:14px;padding:14px 16px;
-    border:1.5px solid var(--line);border-radius:14px;cursor:pointer;
-    transition:border-color .2s,background .2s,transform .12s;
-  }
-  .srow:active{transform:scale(.98);}
-  .srow.sel{border-color:var(--accent);background:var(--accent-soft);}
-  .dot{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;}
-  .srow .slab{font-size:15.5px;font-weight:520;}
+  /* list options */
+  .list{display:flex;flex-direction:column;gap:9px;margin-top:4px;}
+  .lopt{display:flex;align-items:center;gap:13px;padding:14px 16px;border:1.5px solid var(--line);border-radius:13px;cursor:pointer;background:var(--surface);transition:border-color .2s,background .2s,transform .12s;}
+  .lopt:active{transform:scale(.98);}
+  .lopt.sel{border-color:var(--yonsei);background:var(--yonsei-soft);}
+  .lopt .key{width:24px;height:24px;border-radius:6px;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--yonsei-soft);color:var(--yonsei);border:1px solid #C3D6EA;}
+  .lopt.sel .key{background:var(--yonsei);color:#fff;border-color:var(--yonsei);}
+  .lopt .lt{font-size:15px;font-weight:500;line-height:1.35;}
+  .lopt.scale .key{color:#fff;border:none;}
 
-  /* multi select */
-  .badge{
-    font-size:12px;color:var(--accent);background:var(--accent-soft);
-    padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:16px;font-weight:600;
-  }
-  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;}
-  .chip{
-    padding:12px 16px;border:1.5px solid var(--line);border-radius:22px;
-    font-size:15px;font-weight:520;cursor:pointer;background:var(--surface);
-    transition:border-color .2s,background .2s,transform .12s;
-  }
-  .chip:active{transform:scale(.96);}
-  .chip.sel{border-color:var(--accent);background:var(--accent);color:#fff;}
-  .chip.pos.sel{border-color:var(--pos);background:var(--pos);}
-  .chip.neg.sel{border-color:var(--neg);background:var(--neg);}
+  /* multi grid */
+  .badge{font-size:12px;color:var(--yonsei);background:var(--yonsei-soft);padding:3px 11px;border-radius:20px;display:inline-block;margin-bottom:14px;font-weight:600;}
+  .mgrid{display:flex;flex-wrap:wrap;gap:9px;margin-top:2px;}
+  .mopt{flex:1 1 calc(50% - 5px);min-width:0;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;background:var(--surface);transition:all .15s;}
+  .mopt:active{transform:scale(.97);}
+  .mopt.sel{border-color:var(--yonsei);background:var(--yonsei);}
+  .mopt.sel .mk,.mopt.sel .mt{color:#fff;}
+  .mopt.sel.pos{border-color:var(--pos);background:var(--pos);}
+  .mopt.sel.neg{border-color:var(--neg);background:var(--neg);}
+  .mopt .mk{width:22px;height:22px;border-radius:5px;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--yonsei-soft);color:var(--yonsei);}
+  .mopt.sel .mk{background:rgba(255,255,255,.25);}
+  .mopt .mt{font-size:13.5px;font-weight:500;line-height:1.3;}
 
-  .next{
-    margin:16px 24px 0;padding:16px;border:none;border-radius:16px;
-    background:var(--accent);color:#fff;font-size:16px;font-weight:600;
-    cursor:pointer;font-family:inherit;transition:opacity .2s,transform .12s;
-  }
+  .full{flex:1 1 100%;}
+
+  .next{margin:14px 24px 16px;padding:15px;border:none;border-radius:14px;background:var(--yonsei);color:#fff;font-size:15.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .2s,transform .12s;flex:none;}
   .next:disabled{opacity:.35;cursor:default;}
   .next:active:not(:disabled){transform:scale(.98);}
 
-  /* intro + done */
+  /* intro / done */
   .center{align-items:center;justify-content:center;text-align:center;}
-  .bigico{width:96px;height:96px;margin-bottom:24px;}
-  .center h1{font-size:26px;font-weight:700;margin-bottom:12px;letter-spacing:-.02em;}
-  .center p{font-size:15px;color:var(--ink-soft);line-height:1.6;max-width:300px;margin-bottom:8px;}
-  .start{margin-top:32px;padding:16px 44px;border:none;border-radius:40px;background:var(--accent);color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .12s;}
+  .bigmark{width:76px;height:76px;border-radius:50%;background:var(--yonsei);display:flex;align-items:center;justify-content:center;margin-bottom:22px;}
+  .bigmark svg{width:40px;height:40px;}
+  .center h1{font-size:24px;font-weight:720;margin-bottom:12px;letter-spacing:-.02em;}
+  .center p{font-size:14.5px;color:var(--ink-soft);line-height:1.6;max-width:300px;margin-bottom:8px;}
+  .start{margin-top:28px;padding:15px 42px;border:none;border-radius:40px;background:var(--yonsei);color:#fff;font-size:15.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .12s;}
   .start:active{transform:scale(.97);}
-  .meta{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:20px;}
-  .meta span{font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:5px 12px;border-radius:20px;}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:18px;}
+  .meta span{font-size:11.5px;color:var(--ink-soft);border:1px solid var(--line);padding:5px 12px;border-radius:20px;}
 
-  /* identity selects */
-  .field{margin-bottom:18px;}
-  .field label{display:block;font-size:14px;font-weight:600;margin-bottom:9px;color:var(--ink);}
-  .segs{display:flex;flex-wrap:wrap;gap:8px;}
-  .seg{padding:10px 15px;border:1.5px solid var(--line);border-radius:12px;font-size:14px;cursor:pointer;background:var(--surface);transition:all .18s;}
-  .seg:active{transform:scale(.96);}
-  .seg.sel{border-color:var(--accent);background:var(--accent);color:#fff;}
-
-  .spinner{width:44px;height:44px;border:4px solid var(--accent-soft);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+  .spinner{width:42px;height:42px;border:4px solid var(--yonsei-soft);border-top-color:var(--yonsei);border-radius:50%;animation:spin .8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .checkmark{stroke-dasharray:60;stroke-dashoffset:60;animation:draw .6s .2s forwards;}
   @keyframes draw{to{stroke-dashoffset:0;}}
   @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
+
+  /* wifi signal */
+  .wifi{position:relative;width:46px;height:40px;}
+
+.qtext,
+.qhint,
+.lt,
+.mt,
+.il,
+.center h1,
+.center p{
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+
+
+  .other-wrap{flex:1 1 100%;display:none;margin-top:-1px;}
+  .other-wrap.show{display:block;}
+  .other-input{width:100%;padding:13px 14px;border:1.5px solid var(--yonsei);border-radius:12px;background:#fff;color:var(--ink);font-family:inherit;font-size:14px;outline:none;}
+  .other-input:focus{box-shadow:0 0 0 3px rgba(0,56,118,.10);}
+  .other-count{display:block;margin-top:5px;text-align:right;font-size:11px;color:var(--ink-soft);}
+  .qtext,.qhint,.lt,.mt,.il,.center h1,.center p{word-break:keep-all;overflow-wrap:break-word;}
 </style>
 </head>
 <body>
 <div class="phone">
+  <div class="brand">
+    <div class="logo">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="1.6"/><path d="M8 12l2.5 2.5L16 9" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="bt">연세대학교 의료원<small>인재경영실 · 인재개발센터</small></div>
+    </div>
+  </div>
   <div class="topbar" id="topbar" style="visibility:hidden">
-    <button class="back" id="backBtn" aria-label="이전">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
+    <button class="back" id="backBtn" aria-label="이전"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div class="track"><div class="fill" id="fill"></div></div>
     <div class="count" id="count"></div>
   </div>
@@ -162,369 +154,286 @@
 </div>
 
 <script>
-/* ---------- weather / face SVG illustrations (minimal line style) ---------- */
-const ink="#1B2A3A", sun="#E8A24A", cloud="#8FA6B8", rain="#5C8CB0", storm="#3E5D77", cool="#6FA8C7";
-function svg(inner,vb="0 0 48 48"){return `<svg viewBox="${vb}" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;}
-const ICON = {
-  sunny: svg(`<circle cx="24" cy="24" r="9" fill="${sun}" stroke="${sun}"/><g stroke="${sun}"><path d="M24 6v4M24 38v4M6 24h4M38 24h4M11 11l3 3M34 34l3 3M37 11l-3 3M14 34l-3 3"/></g>`),
-  clear: svg(`<circle cx="20" cy="22" r="8" fill="${sun}" stroke="${sun}"/><path d="M28 30c5 0 9-2 12-6" stroke="${cloud}"/><path d="M26 34h14a5 5 0 0 0 0-10 7 7 0 0 0-13-2" fill="#DCE8F2" stroke="${cloud}"/>`),
-  cloudy: svg(`<path d="M14 34h20a7 7 0 0 0 0-14 9 9 0 0 0-17-2 6 6 0 0 0-3 16z" fill="#E4EAF0" stroke="${cloud}"/>`),
-  rain: svg(`<path d="M14 28h20a7 7 0 0 0 0-14 9 9 0 0 0-17-2 6 6 0 0 0-3 16z" fill="#E4EAF0" stroke="${cloud}"/><g stroke="${rain}"><path d="M17 34l-2 5M24 34l-2 5M31 34l-2 5"/></g>`),
-  storm: svg(`<path d="M14 26h20a7 7 0 0 0 0-14 9 9 0 0 0-17-2 6 6 0 0 0-3 16z" fill="#D5DEE7" stroke="${storm}"/><path d="M24 28l-4 7h5l-3 7" stroke="${sun}" fill="none"/>`),
-  /* faces */
-  beam: svg(`<circle cx="24" cy="24" r="17" fill="#FBE2C4" stroke="${sun}"/><path d="M17 21c1-2 3-2 4 0M27 21c1-2 3-2 4 0" stroke="${ink}"/><path d="M16 28c2 5 14 5 16 0" stroke="${ink}"/>`),
-  smile: svg(`<circle cx="24" cy="24" r="17" fill="#E4EDF4" stroke="${cool}"/><circle cx="19" cy="22" r="1.6" fill="${ink}"/><circle cx="29" cy="22" r="1.6" fill="${ink}"/><path d="M18 29c2 3 10 3 12 0" stroke="${ink}"/>`),
-  flat: svg(`<circle cx="24" cy="24" r="17" fill="#E7EAEE" stroke="${cloud}"/><circle cx="19" cy="22" r="1.6" fill="${ink}"/><circle cx="29" cy="22" r="1.6" fill="${ink}"/><path d="M18 30h12" stroke="${ink}"/>`),
-  odd: svg(`<circle cx="24" cy="24" r="17" fill="#ECE6EE" stroke="#9C86A8"/><circle cx="19" cy="22" r="1.6" fill="${ink}"/><circle cx="29" cy="23" r="1.6" fill="${ink}"/><path d="M18 30c2-2 5 1 12-1" stroke="${ink}"/>`),
-  angry: svg(`<circle cx="24" cy="24" r="17" fill="#F4DAD0" stroke="${storm}"/><path d="M16 20l5 2M32 20l-5 2" stroke="${ink}"/><circle cx="19" cy="24" r="1.6" fill="${ink}"/><circle cx="29" cy="24" r="1.6" fill="${ink}"/><path d="M18 32c2-3 10-3 12 0" stroke="${ink}"/>`),
-  heart: svg(`<path d="M24 40C10 30 6 22 10 16c3-4 9-4 11 1 2-5 8-5 11-1 4 6 0 14-8 24z" fill="#DCE8F2" stroke="${cool}"/>`,"0 0 48 48"),
-  chat: svg(`<path d="M8 12h32v20H24l-8 7v-7H8z" fill="#DCE8F2" stroke="${cool}"/><path d="M16 20h16M16 25h10" stroke="${cool}"/>`),
-  spark: svg(`<path d="M24 6l4 12 12 4-12 4-4 12-4-12-12-4 12-4z" fill="#FBEED6" stroke="${sun}"/>`),
-};
+/* ===== config ===== */
+const CONFIG = { ENDPOINT: "PASTE_YOUR_APPS_SCRIPT_URL_HERE", WAVE: "" };
 
-/* ---------- survey data ---------- */
-const survey = [
-  {id:"ident", type:"identity", q:"먼저, 두 가지만 알려주세요", hint:"개인을 특정하지 않아요. 집계는 그룹 단위로만 이뤄집니다."},
-  {id:"q1", type:"icon", tag:"코어 · 감정", q:"최근 1주일, 일하며 느낀 감정 날씨는 어떤가요?",
-    options:[
-      {v:5,ico:"sunny",lab:"아주 맑음",sub:"활기차고 좋았어요"},
-      {v:4,ico:"clear",lab:"맑음",sub:"대체로 괜찮았어요"},
-      {v:3,ico:"cloudy",lab:"흐림",sub:"그저 그랬어요"},
-      {v:2,ico:"rain",lab:"비",sub:"지치고 힘들었어요"},
-      {v:1,ico:"storm",lab:"천둥·비",sub:"많이 버거웠어요"},
-    ]},
-  {id:"q2", type:"multi", tag:"진단 · 감정", q:"요즘 기분을 잘 표현하는 단어를 골라주세요", hint:"2개까지 선택 · 순서 상관없음", max:2,
-    options:[
-      {v:"우울",cls:"neg"},{v:"화남",cls:"neg"},{v:"불안",cls:"neg"},{v:"짜증",cls:"neg"},{v:"무기력",cls:"neg"},
-      {v:"편안",cls:"pos"},{v:"만족",cls:"pos"},{v:"여유",cls:"pos"},{v:"즐거움",cls:"pos"},
-    ]},
-  {id:"q3", type:"scale", tag:"코어 · 번아웃", q:"요즘 느끼는 번아웃 정도는 어떤가요?",
-    options:[
-      {v:5,lab:"전혀 번아웃되지 않았다",c:"#3E8E7E"},
-      {v:4,lab:"번아웃되지 않은 편이다",c:"#6FA88A"},
-      {v:3,lab:"보통이다",c:"#B8A96A"},
-      {v:2,lab:"번아웃된 편이다",c:"#D08A57"},
-      {v:1,lab:"매우 번아웃되어 있다",c:"#C8794F"},
-    ]},
-  {id:"q4", type:"icon", tag:"진단 · 리더십", q:"이번 주 부서장을 떠올리면, 내 표정은?",
-    options:[
-      {v:5,ico:"beam",lab:"완전 밝은 표정"},
-      {v:4,ico:"smile",lab:"흐뭇한 미소"},
-      {v:3,ico:"flat",lab:"무심·무뚝뚝"},
-      {v:2,ico:"odd",lab:"쌩뚱맞은"},
-      {v:1,ico:"angry",lab:"화나는"},
-    ]},
-  {id:"q6", type:"scale", tag:"코어 · 소통", q:"우리 부서 내 소통은 얼마나 원활한가요?", icon:"chat",
-    options:[
-      {v:5,lab:"매우 원활하다",c:"#3E8E7E"},
-      {v:4,lab:"원활한 편이다",c:"#6FA88A"},
-      {v:3,lab:"보통이다",c:"#B8A96A"},
-      {v:2,lab:"막히는 편이다",c:"#D08A57"},
-      {v:1,lab:"매우 막힌다",c:"#C8794F"},
-    ]},
-  {id:"q7", type:"scale", tag:"코어 · 소통", q:"타 부서와의 소통은 얼마나 원활한가요?",
-    options:[
-      {v:5,lab:"매우 원활하다",c:"#3E8E7E"},
-      {v:4,lab:"원활한 편이다",c:"#6FA88A"},
-      {v:3,lab:"보통이다",c:"#B8A96A"},
-      {v:2,lab:"막히는 편이다",c:"#D08A57"},
-      {v:1,lab:"매우 막힌다",c:"#C8794F"},
-    ]},
-  {id:"q8", type:"multi", tag:"진단 · 소통", q:"어떤 상황에서 소통이 어려우신가요?", hint:"2개까지 선택", max:2,
-    options:[
-      {v:"업무 전달 불명확"},{v:"자기 의견만 강조"},{v:"감정 섞인 대화"},
-      {v:"직급·역할 차이"},{v:"책임 소재 불명확"},{v:"기타"},
-    ]},
-  {id:"q9", type:"scale", tag:"코어 · 교육", q:"의료원 교육 프로그램, 어떻게 생각하시나요?", icon:"spark",
-    options:[
-      {v:5,lab:"매우 만족",c:"#3E8E7E"},
-      {v:4,lab:"만족",c:"#6FA88A"},
-      {v:3,lab:"보통",c:"#B8A96A"},
-      {v:2,lab:"불만족",c:"#D08A57"},
-      {v:1,lab:"매우 불만족",c:"#C8794F"},
-    ]},
+/* ===== SVG icons ===== */
+const sun="#F2A93B",cloud="#8FA6B8",rain="#5C8CB0",storm="#3E5D77",ink="#1A2733",navy="#003876";
+function svg(inner){return `<svg viewBox="0 0 48 48" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;}
+const WX={
+  a:svg(`<circle cx="24" cy="24" r="9" fill="${sun}" stroke="${sun}"/><g stroke="${sun}"><path d="M24 6v4M24 38v4M6 24h4M38 24h4M11 11l3 3M34 34l3 3M37 11l-3 3M14 34l-3 3"/></g>`),
+  b:svg(`<circle cx="20" cy="22" r="8" fill="${sun}" stroke="${sun}"/><path d="M26 34h14a5 5 0 0 0 0-10 7 7 0 0 0-13-2" fill="#DCE8F2" stroke="${cloud}"/>`),
+  c:svg(`<path d="M14 34h20a7 7 0 0 0 0-14 9 9 0 0 0-17-2 6 6 0 0 0-3 16z" fill="#E4EAF0" stroke="${cloud}"/>`),
+  d:svg(`<path d="M14 28h20a7 7 0 0 0 0-14 9 9 0 0 0-17-2 6 6 0 0 0-3 16z" fill="#E4EAF0" stroke="${cloud}"/><g stroke="${rain}"><path d="M17 34l-2 5M24 34l-2 5M31 34l-2 5"/></g>`),
+  e:svg(`<path d="M14 26h20a7 7 0 0 0 0-14 9 9 0 0 0-17-2 6 6 0 0 0-3 16z" fill="#D5DEE7" stroke="${storm}"/><path d="M24 28l-4 7h5l-3 7" stroke="${sun}" fill="none"/>`),
+};
+const FACE={
+  a:svg(`<circle cx="24" cy="24" r="17" fill="#FBE2C4" stroke="${sun}"/><path d="M17 21c1-2 3-2 4 0M27 21c1-2 3-2 4 0" stroke="${ink}"/><path d="M16 28c2 5 14 5 16 0" stroke="${ink}"/>`),
+  b:svg(`<circle cx="24" cy="24" r="17" fill="#E4EDF4" stroke="#6FA8C7"/><circle cx="19" cy="22" r="1.6" fill="${ink}"/><circle cx="29" cy="22" r="1.6" fill="${ink}"/><path d="M18 29c2 3 10 3 12 0" stroke="${ink}"/>`),
+  c:svg(`<circle cx="24" cy="24" r="17" fill="#E7EAEE" stroke="${cloud}"/><circle cx="19" cy="22" r="1.6" fill="${ink}"/><circle cx="29" cy="22" r="1.6" fill="${ink}"/><path d="M18 30h12" stroke="${ink}"/>`),
+  d:svg(`<circle cx="24" cy="24" r="17" fill="#ECE6EE" stroke="#9C86A8"/><circle cx="19" cy="22" r="1.6" fill="${ink}"/><circle cx="29" cy="23" r="1.6" fill="${ink}"/><path d="M18 30c2-2 5 1 12-1" stroke="${ink}"/>`),
+  e:svg(`<circle cx="24" cy="24" r="17" fill="#F4DAD0" stroke="${storm}"/><path d="M16 20l5 2M32 20l-5 2" stroke="${ink}"/><circle cx="19" cy="24" r="1.6" fill="${ink}"/><circle cx="29" cy="24" r="1.6" fill="${ink}"/><path d="M18 32c2-3 10-3 12 0" stroke="${ink}"/>`),
+};
+// wifi with N active arcs (of 3), color for on/off
+function wifi(level,label){
+  const on=navy, off="#C9D2DC";
+  const c=(n)=> n<=level?on:off;
+  const dot = level>0? on: off;
+  const xmark = level===0? `<path d="M6 10l8 8M14 10l-8 8" stroke="#E23B2B" stroke-width="3" stroke-linecap="round"/>`:"";
+  return `<svg viewBox="0 0 48 44" fill="none">
+    <path d="M6 18a26 26 0 0 1 36 0" stroke="${c(3)}" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M13 26a16 16 0 0 1 22 0" stroke="${c(2)}" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M19 33a7 7 0 0 1 10 0" stroke="${c(1)}" stroke-width="4.5" stroke-linecap="round"/>
+    <circle cx="24" cy="39" r="3" fill="${dot}"/>
+    ${xmark}
+  </svg>`;
+}
+
+/* ===== survey (원본 15문항 그대로) ===== */
+const survey=[
+  {id:"intro",type:"intro"},
+  // Q1 감정 날씨 (아이콘)
+  {id:"q1",type:"icon",cat:"문항 1 · 근무 만족도",q:"최근 1주일간 일하면서 느끼는 선생님의 감정 날씨는 어떤가요?",
+    options:[{v:"A",ic:WX.a,l:"아주 맑음"},{v:"B",ic:WX.b,l:"맑음"},{v:"C",ic:WX.c,l:"흐림"},{v:"D",ic:WX.d,l:"비"},{v:"E",ic:WX.e,l:"천둥·비"}]},
+  // Q2 번아웃 (단일)
+  {id:"q2",type:"single",cat:"문항 2 · 번아웃 정도",q:"선생님께서 느끼는 번아웃 정도는 어떠합니까?",
+    options:["매우 번아웃 되어있다.","번아웃 되어있는 편이다.","보통이다.","번아웃 되어있지 않은 편이다.","전혀 번아웃되지 않았다."]},
+  // Q3 기분 단어 (2택, 긍/부정 표시)
+  {id:"q3",type:"multi",cat:"문항 3 · 기분 표현 단어",q:"현재 선생님이 느낀 기분을 잘 표현하는 단어를 골라주세요.",hint:"2개 단어를 골라주세요",max:2,
+    options:[{v:"편안한",c:"pos"},{v:"무기력한",c:"neg"},{v:"우울한",c:"neg"},{v:"만족스러운",c:"pos"},{v:"여유로운",c:"pos"},{v:"짜증나는",c:"neg"},{v:"불안한",c:"neg"},{v:"즐거운",c:"pos"},{v:"화난",c:"neg"}]},
+  // Q4 부서장 표정 (아이콘)
+  {id:"q4",type:"icon",cat:"문항 4 · 부서장에 대한 인식",q:"이번 주 나의 부서장을 생각하면 나의 표정은 아마도 이럴 것 같다.",
+    options:[{v:"A",ic:FACE.a,l:"완전 밝은 표정"},{v:"B",ic:FACE.b,l:"흐뭇한 미소"},{v:"C",ic:FACE.c,l:"무심한, 무뚝뚝"},{v:"D",ic:FACE.d,l:"쌩뚱맞은"},{v:"E",ic:FACE.e,l:"화나는"}]},
+  // Q5 부서장 기대 (2택, Other)
+  {id:"q5",type:"multi",fullRows:true,cat:"문항 5 · 부서장에게 기대하는 모습",q:"지금 선생님의 부서장에게 기대하는 모습은 무엇인가요?",hint:"2가지 모습을 선택해주세요.",max:2,
+    options:[{v:"변화를 주도하는 혁신적인 모습"},{v:"직무에 대한 높은 전문성과 역량"},{v:"직원들의 의견을 경청하고 존중"},{v:"직원을 보호하고 신뢰를 줌"},{v:"공정하고 투명한 의사 결정"},{v:"직원들의 성장을 지원하고 코칭"},{v:"성과에 대한 명확한 기대와 피드백"},{v:"기타"}]},
+  // Q6 교육 만족 (단일)
+  {id:"q6",type:"single",cat:"문항 6 · 교육 만족도",q:"선생님은 의료원의 교육 제도에 대해 어떻게 생각하시나요?",
+    options:["매우 만족","만족","보통","불만족","매우 불만족"]},
+  // Q7 교육 인식 (복수, Other)
+  {id:"q7",type:"multiopen",cat:"문항 7 · 교육 인식도",q:"선생님이 참여한 적이 있거나 알고 있는 교육 프로그램을 선택해주세요.",hint:"해당하는 프로그램을 모두 선택 (복수 선택 가능)",
+    options:["PLOS+","디지털클래스","세브란스 인사이트","소확행클래스","세심한클래스(스트레스, 호신술)","없음","기타"]},
+  // Q8 교육 수요 (단일, Other)
+  {id:"q8",type:"single",cat:"문항 8 · 교육 수요",q:"현재 선생님에게 가장 필요한 교육의 주제는 무엇입니까?",
+    options:["직무","소통(협력, 의사소통 등)","리더십","스트레스 관리(힐링, 번아웃 예방 등)","AI · 디지털","기타"]},
+  // Q9 부서 내 소통 (와이파이)
+  {id:"q9",type:"wifi",cat:"문항 9 · 부서 내 소통 원활성",q:"우리 부서 내 소통은 얼마나 원활하다고 느끼시나요?",label:"우리부서",
+    options:[{v:"A",lv:3,l:"매우 원활"},{v:"B",lv:2,l:"원활한 편"},{v:"C",lv:1,l:"보통"},{v:"D",lv:1,l:"약한 편"},{v:"E",lv:0,l:"거의 안 됨"}]},
+  // Q10 타 부서 소통 (와이파이)
+  {id:"q10",type:"wifi",cat:"문항 10 · 타 부서 소통 원활성",q:"타 부서와의 소통은 얼마나 원활하다고 느끼시나요?",label:"타 부서",orange:true,
+    options:[{v:"A",lv:3,l:"매우 원활"},{v:"B",lv:2,l:"원활한 편"},{v:"C",lv:1,l:"보통"},{v:"D",lv:1,l:"약한 편"},{v:"E",lv:0,l:"거의 안 됨"}]},
+  // Q11 소통 어려운 상황 (2택, Other)
+  {id:"q11",type:"multi",fullRows:true,cat:"문항 11 · 소통이 어려운 상황",q:"선생님은 다음 중 어떤 상황에서 소통이 어려우신가요?",hint:"2가지 상황을 선택해주세요.",max:2,
+    options:[{v:"문제 상황에서 책임 소재를 두고 의견이 엇갈림"},{v:"상대방이 내 말을 잘 듣지 않거나, 자신의 의견만 강조함"},{v:"업무 전달이 명확하지 않아 무엇을 어떻게 해야 할지 혼란스러움"},{v:"감정이 섞인 대화로 인해 기분이 상함"},{v:"직급이나 역할 차이로 인해 의견을 자유롭게 표현하기 어려움"},{v:"기타"}]},
+  // Q12 교육 일정 선호 (단일, Other)
+  {id:"q12",type:"single",cat:"문항 12 · 교육 일정 선호도",q:"스트레스 관리 신규 프로그램을 시행한다면, 가장 선호하는 교육 일정을 선택해주세요.",
+    options:["1일","1박 2일","2박 3일","기타"]},
+  // Q13 근무 지역
+  {id:"q13",type:"single",cat:"문항 13 · 근무 지역",q:"선생님의 근무 지역은 어디인가요?",options:["신촌","강남","용인"]},
+  // Q14 연령대
+  {id:"q14",type:"single",cat:"문항 14 · 연령대",q:"선생님의 나이는 어떻게 되시나요?",options:["20대","30대","40대","50대 이상"]},
+  // Q15 근무 기간
+  {id:"q15",type:"single",cat:"문항 15 · 근무 기간",q:"선생님께서 연세의료원과 함께한 기간은 어떻게 되시나요?",
+    options:["1년 미만","1년 이상~5년 미만","5년 이상~10년 미만","10년 이상~15년 미만","15년 이상~20년 미만","20년 이상"]},
 ];
 
-/* ---------- 직무별 맞춤 문항 (직무 선택 시 뒤에 자동 삽입) ---------- */
-const SCALE5 = (labs)=>labs.map((l,i)=>({v:5-i,lab:l,c:["#3E8E7E","#6FA88A","#B8A96A","#D08A57","#C8794F"][i]}));
-const JOB_QUESTIONS = {
-  "임상교원":[
-    {id:"jc1",type:"scale",tag:"직무 · 임상교원",q:"진료·연구·교육 사이 시간 배분, 얼마나 감당 가능한가요?",options:SCALE5(["충분히 감당 가능","감당하는 편","보통","벅찬 편","전혀 감당 안 됨"])},
-    {id:"jc2",type:"single",tag:"직무 · 임상교원",q:"지금 가장 부담되는 영역은? (1개)",options:["진료량·외래 부담","연구·논문 성과 압박","전공의·학생 교육","행정·위원회 업무","기타"]},
-  ],
-  "비임상교원":[
-    {id:"jc1",type:"scale",tag:"직무 · 비임상교원",q:"연구·교육에 필요한 지원(공간·인력·예산)은 충분한가요?",options:SCALE5(["매우 충분","충분한 편","보통","부족한 편","매우 부족"])},
-    {id:"jc2",type:"scale",tag:"직무 · 비임상교원",q:"조직 내에서 본인의 기여가 정당하게 인정받는다고 느끼나요?",options:SCALE5(["매우 그렇다","그런 편","보통","아닌 편","전혀 아니다"])},
-  ],
-  "간호사":[
-    {id:"jc1",type:"scale",tag:"직무 · 간호사",q:"현재 근무 강도(업무량 대비 인력)는 어떤가요?",options:SCALE5(["적정하다","대체로 적정","보통","과중한 편","매우 과중"])},
-    {id:"jc2",type:"single",tag:"직무 · 간호사",q:"교대·근무표에서 가장 개선이 필요한 것은? (1개)",options:["근무표 예측 가능성","연차·휴게 보장","야간·교대 부담","인력 충원","기타"]},
-  ],
-  "사무원":[
-    {id:"jc1",type:"scale",tag:"직무 · 사무원",q:"업무 처리 시스템·프로세스는 효율적이라고 느끼나요?",options:SCALE5(["매우 효율적","효율적인 편","보통","비효율적인 편","매우 비효율적"])},
-    {id:"jc2",type:"single",tag:"직무 · 사무원",q:"업무 중 가장 시간을 많이 뺏기는 것은? (1개)",options:["반복·수기 작업","부서 간 조율·승인","불명확한 업무 지시","시스템 오류·대기","기타"]},
-  ],
-  "의료기술직":[
-    {id:"jc1",type:"scale",tag:"직무 · 의료기술직",q:"전문성을 발휘하고 성장할 기회가 충분한가요?",options:SCALE5(["매우 충분","충분한 편","보통","부족한 편","매우 부족"])},
-    {id:"jc2",type:"single",tag:"직무 · 의료기술직",q:"업무 환경에서 가장 개선이 필요한 것은? (1개)",options:["장비·시설","인력·업무량","전문성 교육 기회","직무 자율성","기타"]},
-  ],
-  "약사":[
-    {id:"jc1",type:"scale",tag:"직무 · 약사",q:"업무량 대비 안전하게 일할 수 있는 여건인가요?",options:SCALE5(["충분히 안전","안전한 편","보통","불안한 편","위태롭다"])},
-    {id:"jc2",type:"single",tag:"직무 · 약사",q:"임상팀과의 협업에서 가장 아쉬운 점은? (1개)",options:["처방 관련 소통","약사 의견 반영도","협업 프로세스","상호 이해·존중","기타"]},
-  ],
-  "관리자":[
-    {id:"jc1",type:"scale",tag:"직무 · 관리자",q:"팀을 이끌 권한·자원은 충분히 주어졌나요?",options:SCALE5(["매우 충분","충분한 편","보통","부족한 편","매우 부족"])},
-    {id:"jc2",type:"single",tag:"직무 · 관리자",q:"관리자로서 지금 가장 어려운 것은? (1개)",options:["구성원 동기부여·케어","상부 요구와 현장 조율","성과 관리","본인 업무와 관리 병행","기타"]},
-  ],
-  "수련직":[
-    {id:"jc1",type:"scale",tag:"직무 · 수련직",q:"수련·교육 받을 시간이 충분히 보장되나요?",options:SCALE5(["충분히 보장","보장되는 편","보통","부족한 편","전혀 보장 안 됨"])},
-    {id:"jc2",type:"single",tag:"직무 · 수련직",q:"수련 환경에서 가장 개선이 필요한 것은? (1개)",options:["과도한 업무·당직","지도·피드백 부족","심리적 안전(질문·실수)","휴식·회복 시간","기타"]},
-  ],
-  "기타":[],
-};
-
-const AGES=["20대","30대","40대","50대 이상"];
-const JOBS=["임상교원","비임상교원","간호사","사무원","의료기술직","약사","관리자","수련직","기타"];
-
-/* ===== 설정: 배포 후 이 두 값만 바꾸면 됩니다 ===== */
-const CONFIG = {
-  // Apps Script 웹앱 배포 URL을 여기에 붙여넣으세요 (설정 가이드 3단계)
-  ENDPOINT: "https://script.google.com/macros/s/AKfycbxhHQEv5wfSbbB-ZSNPllZVrG8H8kQK19GGLqOB1ymLwIvTRbqxDpVlQqIbWj_5YXrmKA/exec",
-  // 이번 회차 식별자. 분기마다 바꿔주세요.
-  WAVE: "2026-Q1"
-};
-/* ================================================ */
-
+const KEYS="ABCDEFGHIJ".split("");
 const answers={};
-let idx=-1; // -1 intro
+let idx=0;
 const stage=document.getElementById('stage');
 const fill=document.getElementById('fill');
 const count=document.getElementById('count');
 const topbar=document.getElementById('topbar');
 const backBtn=document.getElementById('backBtn');
 const nextBtn=document.getElementById('nextBtn');
+let current=null;
 
-function el(html){const d=document.createElement('div');d.innerHTML=html.trim();return d.firstElementChild;}
+function el(h){const d=document.createElement('div');d.innerHTML=h.trim();return d.firstElementChild;}
+const QTOTAL=survey.length-1;
 
-function renderIntro(){
-  topbar.style.visibility='hidden';
-  nextBtn.style.display='none';
-  const c=el(`<div class="card center active">
-    <div class="bigico">${ICON.heart}</div>
-    <h1>이번 분기 마음 체크</h1>
-    <p>요즘 어떻게 지내시는지 8개 질문으로 살펴봐요. 정답은 없어요. 지금 느낌 그대로 골라주세요.</p>
-    <div class="meta"><span>약 2~3분</span><span>완전 익명</span><span>탭하면 자동 진행</span></div>
-    <button class="start" id="startBtn">시작하기</button>
-  </div>`);
-  stage.appendChild(c);
-  current=c;
-  c.querySelector('#startBtn').onclick=()=>{ if(alreadySubmitted()){renderDuplicate();} else {go(0);} };
+function transitionTo(nc){const old=current;stage.appendChild(nc);requestAnimationFrame(()=>{nc.classList.add('active');if(old){old.classList.remove('active');old.classList.add('left');setTimeout(()=>old.remove(),400);}});current=nc;}
+
+function progress(){topbar.style.visibility='visible';fill.style.width=(idx/QTOTAL*100)+'%';count.textContent=idx===0?'':`${idx}/${QTOTAL}`;backBtn.classList.toggle('show',idx>0);}
+
+function alreadyDone(){try{return localStorage.getItem('pulseSurvey_'+CONFIG.WAVE)==='1';}catch(e){return false;}}
+function markDone(){try{localStorage.setItem('pulseSurvey_'+CONFIG.WAVE,'1');}catch(e){}}
+
+function hasOther(item){
+  return item.options.some(o => (typeof o === 'string' ? o : o.v) === '기타');
+}
+function otherIsValid(item){
+  const selected=answers[item.id];
+  const picked=Array.isArray(selected) ? selected.includes('기타') : selected==='기타';
+  return !picked || !!(answers[item.id+'_other']||'').trim();
+}
+function updateNextState(item){
+  const selected=answers[item.id];
+  const hasAnswer=Array.isArray(selected) ? selected.length>0 : !!selected;
+  nextBtn.disabled=!hasAnswer || !otherIsValid(item);
+}
+function makeOtherInput(item){
+  const wrap=el(`<div class="other-wrap"><input class="other-input" type="text" maxlength="20" placeholder="기타 내용을 입력하세요 (최대 20자)" aria-label="기타 내용"><span class="other-count">0/20</span></div>`);
+  const input=wrap.querySelector('input');
+  const countEl=wrap.querySelector('.other-count');
+  input.value=answers[item.id+'_other']||'';
+  countEl.textContent=`${input.value.length}/20`;
+  input.oninput=()=>{
+    answers[item.id+'_other']=input.value;
+    countEl.textContent=`${input.value.length}/20`;
+    updateNextState(item);
+  };
+  input.onclick=e=>e.stopPropagation();
+  input.onkeydown=e=>{e.stopPropagation(); if(e.key==='Enter' && input.value.trim()){ advance(); }};
+  return {wrap,input};
+}
+function setOtherVisible(other,visible,focus=false){
+  if(!other)return;
+  other.wrap.classList.toggle('show',visible);
+  if(visible && focus)setTimeout(()=>other.input.focus(),0);
 }
 
-// 이번 회차에 이 기기에서 이미 제출했는지 (익명 중복 억제)
-function alreadySubmitted(){
-  try{ return localStorage.getItem('pulse_'+CONFIG.WAVE)==='1'; }catch(e){ return false; }
-}
-function markSubmitted(){
-  try{ localStorage.setItem('pulse_'+CONFIG.WAVE,'1'); }catch(e){}
-}
-
-function showCard(html){
-  topbar.style.visibility='hidden';
-  nextBtn.style.display='none';
-  transitionTo(el(html));
-}
-
-// 로딩 화면
-function renderSending(){
-  showCard(`<div class="card center active">
-    <div class="spinner"></div>
-    <p style="margin-top:20px">응답을 저장하는 중…</p>
-  </div>`);
-}
-
-// 완료 화면
-function renderDone(){
-  showCard(`<div class="card center active">
-    <div class="bigico"><svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="#DCE8F2" stroke="#2C5F8A" stroke-width="2"/><path class="checkmark" d="M15 24l6 6 12-13" stroke="#2C5F8A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-    <h1>고맙습니다</h1>
-    <p>응답이 안전하게 기록됐어요. 결과는 그룹 단위로만 집계되고, 다음 분기에 어떻게 달라졌는지 함께 확인하게 됩니다.</p>
-  </div>`);
-}
-
-// 이미 제출함 안내
-function renderDuplicate(){
-  showCard(`<div class="card center active">
-    <div class="bigico">${ICON.heart}</div>
-    <h1>이미 참여하셨어요</h1>
-    <p>이번 분기 설문은 이 기기에서 이미 응답이 완료됐습니다. 소중한 참여 고맙습니다.</p>
-  </div>`);
-}
-
-// 전송 실패 화면 (재시도 가능)
-function renderError(){
-  const c=el(`<div class="card center active">
-    <div class="bigico"><svg viewBox="0 0 48 48" fill="none" stroke="#C8794F" stroke-width="2.5" stroke-linecap="round"><circle cx="24" cy="24" r="20" fill="#F4E4DA" stroke="#C8794F"/><path d="M24 14v14"/><circle cx="24" cy="34" r="1.5" fill="#C8794F" stroke="none"/></svg></div>
-    <h1>전송에 실패했어요</h1>
-    <p>네트워크 문제로 저장되지 않았습니다. 응답은 그대로 남아 있어요. 다시 시도해 주세요.</p>
-    <button class="start" id="retryBtn">다시 시도</button>
-  </div>`);
-  showCard(c.outerHTML);
-  document.getElementById('retryBtn').onclick=submit;
-}
-
-// 응답 전송
-function submit(){
-  renderSending();
-  const payload = Object.assign({ wave: CONFIG.WAVE, age: answers.age, job: answers.job }, {
-    q1:answers.q1, q2:answers.q2, q3:answers.q3, q4:answers.q4,
-    q6:answers.q6, q7:answers.q7, q8:answers.q8, q9:answers.q9,
-    jc1:answers.jc1, jc2:answers.jc2   // 직무별 맞춤 문항 1·2
-  });
-
-  // 미배포 상태(데모)면 저장 흉내만 내고 완료 화면
-  if(!CONFIG.ENDPOINT || CONFIG.ENDPOINT.indexOf('PASTE_')===0){
-    setTimeout(()=>{ markSubmitted(); renderDone(); }, 700);
+function build(item){
+  const c=el(`<div class="card"></div>`);
+  if(item.type==="intro"){
+    c.classList.add('center','active');
+    c.innerHTML=`<div class="bigmark"><svg viewBox="0 0 48 48" fill="none"><path d="M24 8l4 8 9 1-6.5 6 1.5 9-8-4.5-8 4.5 1.5-9L11 17l9-1z" fill="#fff" opacity=".9"/></svg></div>
+      <h1>펄스 서베이</h1>
+      <p>연세의료원 구성원의 마음을 살펴보는 짧은 설문입니다. 정답은 없어요. 지금 느낌 그대로 골라주세요.</p>
+      <div class="meta"><span>15문항 · 약 3분</span><span>익명</span></div>
+      <button class="start" id="startBtn">시작하기</button>`;
+    stage.appendChild(c);current=c;
+    c.querySelector('#startBtn').onclick=()=>{if(alreadyDone()){renderMsg('이미 참여하셨어요','이 기기에서 이번 설문에 이미 응답이 완료됐습니다. 감사합니다.');}else go(1);};
     return;
   }
-
-  fetch(CONFIG.ENDPOINT, {
-    method:'POST',
-    // Apps Script 웹앱은 단순요청으로 보내야 CORS 프리플라이트를 피함
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body: JSON.stringify(payload)
-  })
-  .then(r=>r.json())
-  .then(res=>{ if(res && res.ok){ markSubmitted(); renderDone(); } else { renderError(); } })
-  .catch(()=>{ renderError(); });
-}
-
-function progress(){
-  topbar.style.visibility='visible';
-  const totalQ=survey.length-1; // exclude identity
-  fill.style.width=(idx/(survey.length-1)*100)+'%';
-  count.textContent= idx===0 ? '' : `${idx}/${totalQ}`;
-  backBtn.classList.toggle('show', idx>0);
-}
-
-function buildCard(item){
-  const c=el(`<div class="card"></div>`);
-  if(item.tag) c.appendChild(el(`<div class="qnum">${item.tag}</div>`));
+  c.appendChild(el(`<div class="qnum">${item.cat}</div>`));
   c.appendChild(el(`<div class="qtext">${item.q}</div>`));
-  if(item.hint) c.appendChild(el(`<div class="qhint">${item.hint}</div>`));
+  if(item.hint)c.appendChild(el(`<div class="qhint">${item.hint}</div>`));
 
-  if(item.type==="identity"){
-    const wrapA=el(`<div class="field"><label>연령대</label><div class="segs" id="ageSegs"></div></div>`);
-    AGES.forEach(a=>{const s=el(`<div class="seg">${a}</div>`);s.onclick=()=>{wrapA.querySelectorAll('.seg').forEach(x=>x.classList.remove('sel'));s.classList.add('sel');answers.age=a;checkIdent();};wrapA.querySelector('#ageSegs').appendChild(s);});
-    const wrapJ=el(`<div class="field"><label>직무</label><div class="segs" id="jobSegs"></div></div>`);
-    JOBS.forEach(j=>{const s=el(`<div class="seg">${j}</div>`);s.onclick=()=>{wrapJ.querySelectorAll('.seg').forEach(x=>x.classList.remove('sel'));s.classList.add('sel');answers.job=j;applyJobQuestions(j);checkIdent();};wrapJ.querySelector('#jobSegs').appendChild(s);});
-    c.appendChild(wrapA);c.appendChild(wrapJ);
-    return c;
-  }
-
-  if(item.type==="icon"){
-    const box=el(`<div class="choices"></div>`);
+  if(item.type==="icon" || item.type==="wifi"){
+    const box=el(`<div class="iconrow"></div>`);
     item.options.forEach(o=>{
-      const row=el(`<div class="opt"><div class="ico">${ICON[o.ico]}</div><div class="txtwrap"><div class="lab">${o.lab}</div>${o.sub?`<div class="sub">${o.sub}</div>`:''}</div></div>`);
-      row.onclick=()=>{answers[item.id]=o.v;box.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));row.classList.add('sel');setTimeout(()=>advance(),260);};
-      box.appendChild(row);
+      const graphic=item.type==='wifi'?wifi(o.lv,item.label):o.ic;
+      const card=el(`<div class="icard"><div class="ig">${graphic}</div><div class="il">${o.l}</div></div>`);
+      if(answers[item.id]===o.l)card.classList.add('sel');
+      card.onclick=()=>{answers[item.id]=o.l;box.querySelectorAll('.icard').forEach(x=>x.classList.remove('sel'));card.classList.add('sel');setTimeout(advance,250);};
+      box.appendChild(card);
     });
-    c.appendChild(box);
-    return c;
+    c.appendChild(box);return c;
   }
 
   if(item.type==="single"){
-    const box=el(`<div class="scale"></div>`);
+    const box=el(`<div class="list"></div>`);
+    let other=null;
     item.options.forEach((o,i)=>{
-      const label = (typeof o==="string")? o : o.lab;
-      const row=el(`<div class="srow"><div class="dot" style="background:var(--accent)">${i+1}</div><div class="slab">${label}</div></div>`);
-      row.onclick=()=>{answers[item.id]=label;box.querySelectorAll('.srow').forEach(x=>x.classList.remove('sel'));row.classList.add('sel');setTimeout(()=>advance(),240);};
+      const row=el(`<div class="lopt"><div class="key">${KEYS[i]}</div><div class="lt">${o}</div></div>`);
+      if(answers[item.id]===o)row.classList.add('sel');
+      row.onclick=()=>{
+        answers[item.id]=o;
+        box.querySelectorAll('.lopt').forEach(x=>x.classList.remove('sel'));
+        row.classList.add('sel');
+        if(o==='기타'){
+          setOtherVisible(other,true,true);
+          nextBtn.style.display='block';
+          nextBtn.textContent=(idx===QTOTAL)?'제출':'다음';
+          updateNextState(item);
+        }else{
+          setOtherVisible(other,false);setTimeout(advance,230);
+        }
+      };
       box.appendChild(row);
+      if(o==='기타'){other=makeOtherInput(item);box.appendChild(other.wrap);}
     });
-    c.appendChild(box);
-    return c;
-  }
-
-  if(item.type==="scale"){
-    const box=el(`<div class="scale"></div>`);
-    item.options.forEach(o=>{
-      const row=el(`<div class="srow"><div class="dot" style="background:${o.c}">${o.v}</div><div class="slab">${o.lab}</div></div>`);
-      row.onclick=()=>{answers[item.id]=o.v;box.querySelectorAll('.srow').forEach(x=>x.classList.remove('sel'));row.classList.add('sel');setTimeout(()=>advance(),240);};
-      box.appendChild(row);
-    });
-    c.appendChild(box);
-    return c;
+    setOtherVisible(other,answers[item.id]==='기타');
+    c.appendChild(box);return c;
   }
 
   if(item.type==="multi"){
     answers[item.id]=answers[item.id]||[];
-    c.appendChild(el(`<span class="badge">최대 ${item.max}개 · 다 고르면 자동으로 넘어가요</span>`));
-    const box=el(`<div class="chips"></div>`);
-    item.options.forEach(o=>{
-      const chip=el(`<div class="chip ${o.cls||''}">${o.v}</div>`);
+    c.appendChild(el(`<span class="badge">최대 ${item.max}개 · 기타 선택 시 입력 후 완료</span>`));
+    const box=el(`<div class="mgrid"></div>`);
+    let other=null;
+    item.options.forEach((o,i)=>{
+      const isLong=item.fullRows || o.v.length>14;
+      const chip=el(`<div class="mopt ${o.c||''} ${isLong?'full':''}"><div class="mk">${KEYS[i]}</div><div class="mt">${o.v}</div></div>`);
+      if(answers[item.id].includes(o.v))chip.classList.add('sel');
       chip.onclick=()=>{
-        const arr=answers[item.id];
-        const at=arr.indexOf(o.v);
-        if(at>=0){arr.splice(at,1);chip.classList.remove('sel');}
-        else{ if(arr.length>=item.max){return;} arr.push(o.v);chip.classList.add('sel'); }
-        nextBtn.disabled=arr.length===0;
-        // 최대 개수를 채우면 자동으로 다음으로
-        if(arr.length>=item.max){ setTimeout(()=>advance(),340); }
+        const arr=answers[item.id],at=arr.indexOf(o.v);
+        if(at>=0){
+          arr.splice(at,1);chip.classList.remove('sel');
+          if(o.v==='기타')setOtherVisible(other,false);
+        }else{
+          if(arr.length>=item.max)return;
+          arr.push(o.v);chip.classList.add('sel');
+          if(o.v==='기타')setOtherVisible(other,true,true);
+        }
+        updateNextState(item);
+        if(arr.length>=item.max && !arr.includes('기타'))setTimeout(advance,320);
       };
       box.appendChild(chip);
+      if(o.v==='기타'){other=makeOtherInput(item);box.appendChild(other.wrap);}
     });
-    c.appendChild(box);
-    return c;
+    setOtherVisible(other,answers[item.id].includes('기타'));
+    c.appendChild(box);return c;
+  }
+
+  if(item.type==="multiopen"){
+    answers[item.id]=answers[item.id]||[];
+    c.appendChild(el(`<span class="badge">복수 선택 가능</span>`));
+    const box=el(`<div class="list"></div>`);
+    let other=null;
+    item.options.forEach((o,i)=>{
+      const row=el(`<div class="lopt"><div class="key">${KEYS[i]}</div><div class="lt">${o}</div></div>`);
+      if(answers[item.id].includes(o))row.classList.add('sel');
+      row.onclick=()=>{
+        const arr=answers[item.id],at=arr.indexOf(o);
+        if(at>=0){arr.splice(at,1);row.classList.remove('sel');if(o==='기타')setOtherVisible(other,false);}
+        else{arr.push(o);row.classList.add('sel');if(o==='기타')setOtherVisible(other,true,true);}
+        updateNextState(item);
+      };
+      box.appendChild(row);
+      if(o==='기타'){other=makeOtherInput(item);box.appendChild(other.wrap);}
+    });
+    setOtherVisible(other,answers[item.id].includes('기타'));
+    c.appendChild(box);return c;
   }
   return c;
-}
-
-function checkIdent(){ nextBtn.disabled=!(answers.age&&answers.job); }
-
-// 직무 선택에 따라 맞춤 문항을 공통부 뒤에 삽입 (기존 맞춤 문항은 제거 후 재적용)
-const BASE_SURVEY = survey.slice(); // 공통부 원본 보존
-function applyJobQuestions(job){
-  survey.length = 0;
-  BASE_SURVEY.forEach(x=>survey.push(x));
-  const extra = JOB_QUESTIONS[job] || [];
-  extra.forEach(x=>survey.push(x));
-}
-
-let current=null;
-function transitionTo(newCard){
-  const old=current;
-  stage.appendChild(newCard);
-  requestAnimationFrame(()=>{
-    newCard.classList.add('active');
-    if(old){old.classList.remove('active');old.classList.add('left');setTimeout(()=>old.remove(),420);}
-  });
-  current=newCard;
 }
 
 function go(i){
   idx=i;
   if(idx>=survey.length){submit();return;}
-  const item=survey[idx];
-  const card=buildCard(item);
-  transitionTo(card);
-  progress();
-  // footer button: only for identity + multi (icon/scale auto-advance)
-  if(item.type==="identity"){nextBtn.style.display='block';nextBtn.textContent='다음';nextBtn.disabled=!(answers.age&&answers.job);}
-  else if(item.type==="multi"){nextBtn.style.display='block';nextBtn.textContent=(idx===survey.length-1)?'이대로 제출':'1개만 고르고 다음';nextBtn.disabled=(answers[item.id]||[]).length===0;}
-  else {nextBtn.style.display='none';}
+  const item=survey[idx],card=build(item);
+  if(item.type==="intro")return;
+  transitionTo(card);progress();
+  const needsButton=item.type==='multi'||item.type==='multiopen'||(item.type==='single' && answers[item.id]==='기타');
+  nextBtn.style.display=needsButton?'block':'none';
+  if(needsButton){nextBtn.textContent=(idx===QTOTAL)?'제출':(item.type==='multi'?'선택 완료':'다음');updateNextState(item);}
+}
+function advance(){go(idx+1);}
+nextBtn.onclick=()=>advance();
+backBtn.onclick=()=>{if(idx>1)go(idx-1);else{location.reload();}};
+
+function renderMsg(title,body,ok){
+  topbar.style.visibility='hidden';nextBtn.style.display='none';
+  const icon = ok?`<div class="bigmark"><svg viewBox="0 0 48 48" fill="none"><path class="checkmark" d="M14 24l7 7 14-15" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`
+    :`<div class="bigmark"><svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="3" fill="#fff"/><path d="M24 12v18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></div>`;
+  transitionTo(el(`<div class="card center active">${icon}<h1>${title}</h1><p>${body}</p></div>`));
 }
 
-function advance(){ go(idx+1); }
+function submit(){
+  topbar.style.visibility='hidden';nextBtn.style.display='none';
+  transitionTo(el(`<div class="card center active"><div class="spinner"></div><p style="margin-top:20px">응답을 저장하는 중…</p></div>`));
+  const payload=Object.assign({wave:CONFIG.WAVE},answers);
+  if(!CONFIG.ENDPOINT||CONFIG.ENDPOINT.indexOf('PASTE_')===0){
+    setTimeout(()=>{markDone();renderMsg('참여해 주셔서 감사합니다','응답이 안전하게 기록되었습니다. 소중한 의견은 더 나은 조직문화를 만드는 데 활용됩니다.',true);},700);return;
+  }
+  fetch(CONFIG.ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+    .then(r=>r.json()).then(res=>{if(res&&res.ok){markDone();renderMsg('참여해 주셔서 감사합니다','응답이 안전하게 기록되었습니다. 소중한 의견은 더 나은 조직문화를 만드는 데 활용됩니다.',true);}else{renderMsg('전송 실패','네트워크 문제로 저장되지 않았습니다. 잠시 후 다시 시도해 주세요.');}})
+    .catch(()=>renderMsg('전송 실패','네트워크 문제로 저장되지 않았습니다. 잠시 후 다시 시도해 주세요.'));
+}
 
-nextBtn.onclick=()=>advance();
-backBtn.onclick=()=>{ if(idx>0) go(idx-1); };
-
-// keyboard support
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowLeft'&&idx>0)go(idx-1);
-});
-
-renderIntro();
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'&&idx>1)go(idx-1);});
+build(survey[0]);
 </script>
 </body>
 </html>
