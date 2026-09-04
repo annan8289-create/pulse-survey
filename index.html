@@ -116,23 +116,6 @@
   /* wifi signal */
   .wifi{position:relative;width:46px;height:40px;}
 
-.qtext,
-.qhint,
-.lt,
-.mt,
-.il,
-.center h1,
-.center p{
-  word-break:keep-all;
-  overflow-wrap:break-word;
-}
-
-
-  .other-wrap{flex:1 1 100%;display:none;margin-top:-1px;}
-  .other-wrap.show{display:block;}
-  .other-input{width:100%;padding:13px 14px;border:1.5px solid var(--yonsei);border-radius:12px;background:#fff;color:var(--ink);font-family:inherit;font-size:14px;outline:none;}
-  .other-input:focus{box-shadow:0 0 0 3px rgba(0,56,118,.10);}
-  .other-count{display:block;margin-top:5px;text-align:right;font-size:11px;color:var(--ink-soft);}
   .qtext,.qhint,.lt,.mt,.il,.center h1,.center p{word-break:keep-all;overflow-wrap:break-word;}
 </style>
 </head>
@@ -155,7 +138,12 @@
 
 <script>
 /* ===== config ===== */
-const CONFIG = { ENDPOINT: "https://script.google.com/macros/s/AKfycbxhHQEv5wfSbbB-ZSNPllZVrG8H8kQK19GGLqOB1ymLwIvTRbqxDpVlQqIbWj_5YXrmKA/exec", WAVE: "" };
+const CONFIG = {
+  ENDPOINT: "https://script.google.com/macros/s/AKfycbxhHQEv5wfSbbB-ZSNPllZVrG8H8kQK19GGLqOB1ymLwIvTRbqxDpVlQqIbWj_5YXrmKA/exec",
+  SURVEY_ID: "pulse_survey",
+  SURVEY_TITLE: "펄스서베이",
+  WAVE: ""
+};
 
 /* ===== SVG icons ===== */
 const sun="#F2A93B",cloud="#8FA6B8",rain="#5C8CB0",storm="#3E5D77",ink="#1A2733",navy="#003876";
@@ -205,7 +193,7 @@ const survey=[
   {id:"q4",type:"icon",cat:"문항 4 · 부서장에 대한 인식",q:"이번 주 나의 부서장을 생각하면 나의 표정은 아마도 이럴 것 같다.",
     options:[{v:"A",ic:FACE.a,l:"완전 밝은 표정"},{v:"B",ic:FACE.b,l:"흐뭇한 미소"},{v:"C",ic:FACE.c,l:"무심한, 무뚝뚝"},{v:"D",ic:FACE.d,l:"쌩뚱맞은"},{v:"E",ic:FACE.e,l:"화나는"}]},
   // Q5 부서장 기대 (2택, Other)
-  {id:"q5",type:"multi",fullRows:true,cat:"문항 5 · 부서장에게 기대하는 모습",q:"지금 선생님의 부서장에게 기대하는 모습은 무엇인가요?",hint:"2가지 모습을 선택해주세요.",max:2,
+  {id:"q5",type:"multi",cat:"문항 5 · 부서장에게 기대하는 모습",q:"지금 선생님의 부서장에게 기대하는 모습은 무엇인가요?",hint:"2가지 모습을 선택해주세요.",max:2,
     options:[{v:"변화를 주도하는 혁신적인 모습"},{v:"직무에 대한 높은 전문성과 역량"},{v:"직원들의 의견을 경청하고 존중"},{v:"직원을 보호하고 신뢰를 줌"},{v:"공정하고 투명한 의사 결정"},{v:"직원들의 성장을 지원하고 코칭"},{v:"성과에 대한 명확한 기대와 피드백"},{v:"기타"}]},
   // Q6 교육 만족 (단일)
   {id:"q6",type:"single",cat:"문항 6 · 교육 만족도",q:"선생님은 의료원의 교육 제도에 대해 어떻게 생각하시나요?",
@@ -223,7 +211,7 @@ const survey=[
   {id:"q10",type:"wifi",cat:"문항 10 · 타 부서 소통 원활성",q:"타 부서와의 소통은 얼마나 원활하다고 느끼시나요?",label:"타 부서",orange:true,
     options:[{v:"A",lv:3,l:"매우 원활"},{v:"B",lv:2,l:"원활한 편"},{v:"C",lv:1,l:"보통"},{v:"D",lv:1,l:"약한 편"},{v:"E",lv:0,l:"거의 안 됨"}]},
   // Q11 소통 어려운 상황 (2택, Other)
-  {id:"q11",type:"multi",fullRows:true,cat:"문항 11 · 소통이 어려운 상황",q:"선생님은 다음 중 어떤 상황에서 소통이 어려우신가요?",hint:"2가지 상황을 선택해주세요.",max:2,
+  {id:"q11",type:"multi",cat:"문항 11 · 소통이 어려운 상황",q:"선생님은 다음 중 어떤 상황에서 소통이 어려우신가요?",hint:"2가지 상황을 선택해주세요.",max:2,
     options:[{v:"문제 상황에서 책임 소재를 두고 의견이 엇갈림"},{v:"상대방이 내 말을 잘 듣지 않거나, 자신의 의견만 강조함"},{v:"업무 전달이 명확하지 않아 무엇을 어떻게 해야 할지 혼란스러움"},{v:"감정이 섞인 대화로 인해 기분이 상함"},{v:"직급이나 역할 차이로 인해 의견을 자유롭게 표현하기 어려움"},{v:"기타"}]},
   // Q12 교육 일정 선호 (단일, Other)
   {id:"q12",type:"single",cat:"문항 12 · 교육 일정 선호도",q:"스트레스 관리 신규 프로그램을 시행한다면, 가장 선호하는 교육 일정을 선택해주세요.",
@@ -255,42 +243,8 @@ function transitionTo(nc){const old=current;stage.appendChild(nc);requestAnimati
 
 function progress(){topbar.style.visibility='visible';fill.style.width=(idx/QTOTAL*100)+'%';count.textContent=idx===0?'':`${idx}/${QTOTAL}`;backBtn.classList.toggle('show',idx>0);}
 
-function alreadyDone(){try{return localStorage.getItem('pulseSurvey_'+CONFIG.WAVE)==='1';}catch(e){return false;}}
-function markDone(){try{localStorage.setItem('pulseSurvey_'+CONFIG.WAVE,'1');}catch(e){}}
-
-function hasOther(item){
-  return item.options.some(o => (typeof o === 'string' ? o : o.v) === '기타');
-}
-function otherIsValid(item){
-  const selected=answers[item.id];
-  const picked=Array.isArray(selected) ? selected.includes('기타') : selected==='기타';
-  return !picked || !!(answers[item.id+'_other']||'').trim();
-}
-function updateNextState(item){
-  const selected=answers[item.id];
-  const hasAnswer=Array.isArray(selected) ? selected.length>0 : !!selected;
-  nextBtn.disabled=!hasAnswer || !otherIsValid(item);
-}
-function makeOtherInput(item){
-  const wrap=el(`<div class="other-wrap"><input class="other-input" type="text" maxlength="20" placeholder="기타 내용을 입력하세요 (최대 20자)" aria-label="기타 내용"><span class="other-count">0/20</span></div>`);
-  const input=wrap.querySelector('input');
-  const countEl=wrap.querySelector('.other-count');
-  input.value=answers[item.id+'_other']||'';
-  countEl.textContent=`${input.value.length}/20`;
-  input.oninput=()=>{
-    answers[item.id+'_other']=input.value;
-    countEl.textContent=`${input.value.length}/20`;
-    updateNextState(item);
-  };
-  input.onclick=e=>e.stopPropagation();
-  input.onkeydown=e=>{e.stopPropagation(); if(e.key==='Enter' && input.value.trim()){ advance(); }};
-  return {wrap,input};
-}
-function setOtherVisible(other,visible,focus=false){
-  if(!other)return;
-  other.wrap.classList.toggle('show',visible);
-  if(visible && focus)setTimeout(()=>other.input.focus(),0);
-}
+function alreadyDone(){try{return localStorage.getItem('surveyDone_'+CONFIG.SURVEY_ID+'_'+CONFIG.WAVE)==='1';}catch(e){return false;}}
+function markDone(){try{localStorage.setItem('surveyDone_'+CONFIG.SURVEY_ID+'_'+CONFIG.WAVE,'1');}catch(e){}}
 
 function build(item){
   const c=el(`<div class="card"></div>`);
@@ -302,98 +256,71 @@ function build(item){
       <div class="meta"><span>15문항 · 약 3분</span><span>익명</span></div>
       <button class="start" id="startBtn">시작하기</button>`;
     stage.appendChild(c);current=c;
-    c.querySelector('#startBtn').onclick=()=>{if(alreadyDone()){renderMsg('이미 참여하셨어요','이 기기에서 이번 설문에 이미 응답이 완료됐습니다. 감사합니다.');}else go(1);};
+    c.querySelector('#startBtn').onclick=()=>{ if(alreadyDone()){renderMsg('이미 참여하셨어요','이 기기에서 이번 설문에 이미 응답이 완료됐습니다. 감사합니다.');} else go(1); };
     return;
   }
   c.appendChild(el(`<div class="qnum">${item.cat}</div>`));
   c.appendChild(el(`<div class="qtext">${item.q}</div>`));
-  if(item.hint)c.appendChild(el(`<div class="qhint">${item.hint}</div>`));
+  if(item.hint) c.appendChild(el(`<div class="qhint">${item.hint}</div>`));
 
-  if(item.type==="icon" || item.type==="wifi"){
+  if(item.type==="icon"){
     const box=el(`<div class="iconrow"></div>`);
     item.options.forEach(o=>{
-      const graphic=item.type==='wifi'?wifi(o.lv,item.label):o.ic;
-      const card=el(`<div class="icard"><div class="ig">${graphic}</div><div class="il">${o.l}</div></div>`);
-      if(answers[item.id]===o.l)card.classList.add('sel');
+      const card=el(`<div class="icard"><div class="ig">${o.ic}</div><div class="il">${o.l}</div></div>`);
       card.onclick=()=>{answers[item.id]=o.l;box.querySelectorAll('.icard').forEach(x=>x.classList.remove('sel'));card.classList.add('sel');setTimeout(advance,250);};
       box.appendChild(card);
     });
     c.appendChild(box);return c;
   }
-
+  if(item.type==="wifi"){
+    const box=el(`<div class="iconrow"></div>`);
+    item.options.forEach(o=>{
+      const card=el(`<div class="icard"><div class="ig">${wifi(o.lv,item.label)}</div><div class="il">${o.l}</div></div>`);
+      card.onclick=()=>{answers[item.id]=o.l;box.querySelectorAll('.icard').forEach(x=>x.classList.remove('sel'));card.classList.add('sel');setTimeout(advance,250);};
+      box.appendChild(card);
+    });
+    c.appendChild(box);return c;
+  }
   if(item.type==="single"){
     const box=el(`<div class="list"></div>`);
-    let other=null;
     item.options.forEach((o,i)=>{
       const row=el(`<div class="lopt"><div class="key">${KEYS[i]}</div><div class="lt">${o}</div></div>`);
-      if(answers[item.id]===o)row.classList.add('sel');
-      row.onclick=()=>{
-        answers[item.id]=o;
-        box.querySelectorAll('.lopt').forEach(x=>x.classList.remove('sel'));
-        row.classList.add('sel');
-        if(o==='기타'){
-          setOtherVisible(other,true,true);
-          nextBtn.style.display='block';
-          nextBtn.textContent=(idx===QTOTAL)?'제출':'다음';
-          updateNextState(item);
-        }else{
-          setOtherVisible(other,false);setTimeout(advance,230);
-        }
-      };
+      row.onclick=()=>{answers[item.id]=o;box.querySelectorAll('.lopt').forEach(x=>x.classList.remove('sel'));row.classList.add('sel');setTimeout(advance,230);};
       box.appendChild(row);
-      if(o==='기타'){other=makeOtherInput(item);box.appendChild(other.wrap);}
     });
-    setOtherVisible(other,answers[item.id]==='기타');
     c.appendChild(box);return c;
   }
-
   if(item.type==="multi"){
     answers[item.id]=answers[item.id]||[];
-    c.appendChild(el(`<span class="badge">최대 ${item.max}개 · 기타 선택 시 입력 후 완료</span>`));
+    c.appendChild(el(`<span class="badge">최대 ${item.max}개 · 다 고르면 자동 진행</span>`));
     const box=el(`<div class="mgrid"></div>`);
-    let other=null;
     item.options.forEach((o,i)=>{
-      const isLong=item.fullRows || o.v.length>14;
+      const isLong = o.v.length>14;
       const chip=el(`<div class="mopt ${o.c||''} ${isLong?'full':''}"><div class="mk">${KEYS[i]}</div><div class="mt">${o.v}</div></div>`);
-      if(answers[item.id].includes(o.v))chip.classList.add('sel');
       chip.onclick=()=>{
-        const arr=answers[item.id],at=arr.indexOf(o.v);
-        if(at>=0){
-          arr.splice(at,1);chip.classList.remove('sel');
-          if(o.v==='기타')setOtherVisible(other,false);
-        }else{
-          if(arr.length>=item.max)return;
-          arr.push(o.v);chip.classList.add('sel');
-          if(o.v==='기타')setOtherVisible(other,true,true);
-        }
-        updateNextState(item);
-        if(arr.length>=item.max && !arr.includes('기타'))setTimeout(advance,320);
+        const arr=answers[item.id];const at=arr.indexOf(o.v);
+        if(at>=0){arr.splice(at,1);chip.classList.remove('sel');}
+        else{if(arr.length>=item.max)return;arr.push(o.v);chip.classList.add('sel');}
+        nextBtn.disabled=arr.length===0;
+        if(arr.length>=item.max)setTimeout(advance,320);
       };
       box.appendChild(chip);
-      if(o.v==='기타'){other=makeOtherInput(item);box.appendChild(other.wrap);}
     });
-    setOtherVisible(other,answers[item.id].includes('기타'));
     c.appendChild(box);return c;
   }
-
-  if(item.type==="multiopen"){
+  if(item.type==="multiopen"){ // 복수, 개수 제한 없음
     answers[item.id]=answers[item.id]||[];
     c.appendChild(el(`<span class="badge">복수 선택 가능</span>`));
     const box=el(`<div class="list"></div>`);
-    let other=null;
     item.options.forEach((o,i)=>{
       const row=el(`<div class="lopt"><div class="key">${KEYS[i]}</div><div class="lt">${o}</div></div>`);
-      if(answers[item.id].includes(o))row.classList.add('sel');
       row.onclick=()=>{
-        const arr=answers[item.id],at=arr.indexOf(o);
-        if(at>=0){arr.splice(at,1);row.classList.remove('sel');if(o==='기타')setOtherVisible(other,false);}
-        else{arr.push(o);row.classList.add('sel');if(o==='기타')setOtherVisible(other,true,true);}
-        updateNextState(item);
+        const arr=answers[item.id];const at=arr.indexOf(o);
+        if(at>=0){arr.splice(at,1);row.classList.remove('sel');}else{arr.push(o);row.classList.add('sel');}
+        nextBtn.disabled=arr.length===0;
       };
       box.appendChild(row);
-      if(o==='기타'){other=makeOtherInput(item);box.appendChild(other.wrap);}
     });
-    setOtherVisible(other,answers[item.id].includes('기타'));
     c.appendChild(box);return c;
   }
   return c;
@@ -402,12 +329,13 @@ function build(item){
 function go(i){
   idx=i;
   if(idx>=survey.length){submit();return;}
-  const item=survey[idx],card=build(item);
+  const item=survey[idx];
+  const card=build(item);
   if(item.type==="intro")return;
   transitionTo(card);progress();
-  const needsButton=item.type==='multi'||item.type==='multiopen'||(item.type==='single' && answers[item.id]==='기타');
-  nextBtn.style.display=needsButton?'block':'none';
-  if(needsButton){nextBtn.textContent=(idx===QTOTAL)?'제출':(item.type==='multi'?'선택 완료':'다음');updateNextState(item);}
+  if(item.type==="multi"){nextBtn.style.display='block';nextBtn.textContent=(idx===QTOTAL)?'제출':'선택 완료';nextBtn.disabled=(answers[item.id]||[]).length===0;}
+  else if(item.type==="multiopen"){nextBtn.style.display='block';nextBtn.textContent=(idx===QTOTAL)?'제출':'다음';nextBtn.disabled=(answers[item.id]||[]).length===0;}
+  else {nextBtn.style.display='none';}
 }
 function advance(){go(idx+1);}
 nextBtn.onclick=()=>advance();
@@ -423,7 +351,12 @@ function renderMsg(title,body,ok){
 function submit(){
   topbar.style.visibility='hidden';nextBtn.style.display='none';
   transitionTo(el(`<div class="card center active"><div class="spinner"></div><p style="margin-top:20px">응답을 저장하는 중…</p></div>`));
-  const payload=Object.assign({wave:CONFIG.WAVE},answers);
+  const payload={
+    surveyId:CONFIG.SURVEY_ID,
+    surveyTitle:CONFIG.SURVEY_TITLE,
+    wave:CONFIG.WAVE,
+    answers:answers
+  };
   if(!CONFIG.ENDPOINT||CONFIG.ENDPOINT.indexOf('PASTE_')===0){
     setTimeout(()=>{markDone();renderMsg('참여해 주셔서 감사합니다','응답이 안전하게 기록되었습니다. 소중한 의견은 더 나은 조직문화를 만드는 데 활용됩니다.',true);},700);return;
   }
